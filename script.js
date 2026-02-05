@@ -53,13 +53,14 @@ async function checkPin() {
     const errorMsg = document.getElementById('pinError');
     const btn = document.querySelector('#lockScreen .btn-primary-neon');
 
-    if (inputPin.length !== 12) {
+    if (inputPin === "") {
         errorMsg.style.display = "block";
-        errorMsg.innerText = "CDI INCORRECTO";
+        errorMsg.innerText = "INGRESE SU CDI";
         return;
     }
 
     btn.innerText = "VERIFICANDO...";
+    errorMsg.style.display = "none";
 
     try {
         const { data, error } = await supabaseClient
@@ -79,9 +80,14 @@ async function checkPin() {
             errorMsg.style.display = "block";
             errorMsg.innerText = "CDI NO AUTORIZADO";
             btn.innerText = "REINTENTAR";
+            
+            const loginBox = document.querySelector('.lock-box');
+            if(loginBox) loginBox.classList.add('shake-animation');
+            setTimeout(() => loginBox.classList.remove('shake-animation'), 500);
         }
     } catch (err) {
         btn.innerText = "ERROR DE RED";
+        console.error("Error crítico:", err);
     }
 }
 
