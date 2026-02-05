@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aula Educativa - Vylkroxant</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+<div id="downloadModal" class="download-modal-overlay">
+    <div class="peticion-box security-box">
+        <h2>VERIFICACIÓN DE NIVEL 2</h2>
+        <p>Se requiere un CDI de descarga autorizado para liberar este recurso del repositorio.</p>
+        <input type="text" id="cdiDownloadInput" class="input-cdi-vylkroxant" placeholder="XXXXX-XXXXX">
+<div class="descarga-buttons">
+    <span id="downloadError" style="display: none; color: #ff0055; font-size: 12px; margin-bottom: 10px; text-shadow: 0 0 5px #ff0055; font-weight: bold; width: 100%; text-align: center;"></span>
+
+    <button onclick="confirmarDescarga()" class="btn-confirm">VALIDAR</button>
+    <button onclick="cerrarModalDescarga()" class="btn-cancel">CANCELAR</button>
+</div>
+    </div>
+</div>
+<div id="securityAlert">
+    <div class="security-box">
+        <i data-lucide="shield-alert" class="security-boxi"></i>
+        <h2>Aviso Importante</h2>
+        <p>Las funciones de copia, inspección y guardado de página han sido deshabilitadas...</p>
+        
+        <button onclick="hideSecurityAlert()" class="btn-primary-neon" style="margin-top: 20px;">ENTENDIDO</button>
+    </div>
+</div>
+
+<div id="validationAlert"></div>
+<div id="lockScreen" style="border: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 10000; display: flex; justify-content: center; align-items: center; transition: 0.5s;">
+<div class="security-card" style="text-align: center; background: black; padding: 40px; border-radius: 20px; border: 1px solid white; backdrop-filter: blur(20px);">
+<i data-lucide="shield-check" style="color: white; width: 60px; height: 60px; margin-bottom: 20px;"></i>
+<h2 style="color: white; margin-bottom: 10px; letter-spacing: 1px;">Vylkroxant</h2>
+<p style="color: var(--text-dim); font-size: 0.8rem; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 2px;">
+Acceso Restringido
+</p>      
+<input type="text" id="pinInput" placeholder="CDI" maxlength="12" 
+       style="letter-spacing: 2px; text-align: center; text-transform: uppercase; font-size: 1rem !important;">
+<button onclick="checkPin()" class="btn-primary-neon" style="width: 100%;">DESBLOQUEAR</button>
+<p id="pinError" style="margin-top: 15px; display: none; color: #ff4d4d; font-size: 0.8rem; font-weight: bold; animation: shake 0.4s ease;">
+PIN INCORRECTO - ACCESO DENEGADO
+</p>
+</div>
+</div -->
+<div id="securityAlert" class="security-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:20000; justify-content:center; align-items:center; backdrop-filter:blur(15px);">
+<div class="security-box" style="border: 2px solid #ff4d4d; padding: 30px; border-radius: 15px; text-align: center; background: #0a0a0a;">
+<i data-lucide="shield-alert" style="width: 50px; height: 50px; color: #ff4d4d; margin-bottom: 15px;"></i>
+<h2 style="color: #ff4d4d;">SISTEMA PROTEGIDO</h2>
+<p style="color: #8b949e; margin: 15px 0;">Su dirección IP y actividad han sido registradas en el log del sistema de Vylkroxant. El acceso a las herramientas de desarrollo está estrictamente prohibido.</p>
+<button onclick="hideSecurityAlert()" class="btn-primary-neon">REINTENTAR</button>
+</div>
+</div>
+<div class="dashboard-container">
+<aside class="sidebar">
+<div class="brand">
+<i data-lucide="shield-check"></i>
+<span>Vylkroxant</span>
+</div>            
+<nav class="nav-menu">
+<button class="nav-item active" id="btn-all" onclick="filterRepo('all')">
+<i data-lucide="layers"></i> Todos los Archivos
+</button>
+<p class="nav-label">MS Office Suite</p>
+<button class="nav-item" onclick="filterRepo('word')"><i data-lucide="file-text"></i> Word</button>
+<button class="nav-item" onclick="filterRepo('excel')"><i data-lucide="sheet"></i> Excel</button>
+<button class="nav-item" onclick="filterRepo('powerpoint')"><i data-lucide="presentation"></i> PowerPoint</button>
+<button class="nav-item" onclick="filterRepo('access')"><i data-lucide="database"></i> Access</button>
+<button class="nav-item" onclick="filterRepo('visio')"><i data-lucide="network"></i> Visio</button>
+<button class="nav-item" onclick="filterRepo('project')"><i data-lucide="calendar-range"></i> Project</button>
+<button class="nav-item" onclick="filterRepo('publisher')"><i data-lucide="layout"></i> Publisher</button>
+<button class="nav-item" onclick="filterRepo('outlook')"><i data-lucide="mail"></i> Outlook</button>    
+<p class="nav-label">MS Cloud & Power</p>
+<button class="nav-item" onclick="filterRepo('powerbi')"><i data-lucide="bar-chart-3"></i> Power BI</button>
+<button class="nav-item" onclick="filterRepo('automate')"><i data-lucide="zap"></i> Power Automate</button>
+<button class="nav-item" onclick="filterRepo('apps')"><i data-lucide="layout-template"></i> Power Apps</button>
+<button class="nav-item" onclick="filterRepo('onenote')"><i data-lucide="sticky-note"></i> OneNote</button>
+<button class="nav-item" onclick="filterRepo('tdo')"><i data-lucide="check-square"></i> To Do</button>
+<button class="nav-item" onclick="filterRepo('forms')"><i data-lucide="list-todo"></i> Forms</button>
+<button class="nav-item" onclick="filterRepo('loop')"><i data-lucide="rotate-cw"></i> Loop</button>
+<button class="nav-item" onclick="filterRepo('teams')"><i data-lucide="users"></i> Teams</button>
+<button class="nav-item" onclick="filterRepo('sharepoint')"><i data-lucide="share-2"></i> SharePoint</button>
+<button class="nav-item" onclick="filterRepo('pages')"><i data-lucide="globe"></i> Web Pages</button>
+<p class="nav-label">Desarrollo & Lógica</p>
+<button class="nav-item" onclick="filterRepo('cpp')"><i data-lucide="code-2"></i> C++ / Dev++</button>
+<button class="nav-item" onclick="filterRepo('pseint')"><i data-lucide="terminal"></i> PSeInt</button>
+<button class="nav-item" onclick="filterRepo('html')"><i data-lucide="file-code"></i> HTML5</button>
+<button class="nav-item" onclick="filterRepo('css')"><i data-lucide="palette"></i> CSS3</button>
+<button class="nav-item" onclick="filterRepo('js')"><i data-lucide="scroll"></i> JavaScript</button>
+<button class="nav-item" onclick="filterRepo('python')"><i data-lucide="binary"></i> Python</button>
+<button class="nav-item" onclick="filterRepo('java')"><i data-lucide="coffee"></i> Java</button>    
+<p class="nav-label">Multimedia & Otros</p>
+<button class="nav-item" onclick="filterRepo('pictures')"><i data-lucide="image"></i> Pictures</button>
+<button class="nav-item" onclick="filterRepo('mp3')"><i data-lucide="music"></i> MP3 / Audio</button>
+<button class="nav-item" onclick="filterRepo('pdf')"><i data-lucide="file-type-2"></i> PDF</button>
+<button class="nav-item" onclick="filterRepo('archive')"><i data-lucide="archive"></i> ZIP / RAR</button>
+<button class="nav-item" onclick="filterRepo('txt')"><i data-lucide="file-signature"></i> Texto Plano</button>
+</nav>
+</aside>
+<main class="main-content">
+<header class="top-bar">
+<h1>Aula de Deberes Estudiantiles de todos los Niveles y Cursos - Vylkroxant</h1>   
+<div class="header-actions">
+<button class="btn-primary" onclick="openModal()">
+<i data-lucide="plus"></i> Agregar Archivo
+</button>
+<button class="btn-primary" type="button" onclick="window.location.href='index.html'">
+<span>Volver</span>
+</button>
+</div>
+</header>
+<div id="repoGrid" class="repo-grid"></div>
+</main>
+</div>
+<div id="uploadModal" class="modal">
+<div class="modal-content">
+<h2 class="modal-title">Subir Archivo a Vylkroxant</h2>        
+<div id="validationAlert" class="validation-alert"></div>
+<form id="uploadForm">
+<div class="input-group">
+<label>Nombre del Archivo</label>
+<input type="text" id="fileNameInput" placeholder="Ej: Backend API v2" required>
+</div>
+<div class="input-group">
+<label>Clase de Archivo</label>
+<select id="categorySelect" required>
+<option value="" disabled selected>Selecciona una opción...</option>        
+<optgroup label="Microsoft Office">
+<option value="word">MS Word</option>
+<option value="excel">MS Excel</option>
+<option value="powerpoint">MS PowerPoint</option>
+<option value="access">MS Access</option>
+<option value="visio">MS Visio</option>
+<option value="project">MS Project</option>
+<option value="publisher">MS Publisher</option>
+<option value="outlook">MS Outlook</option>
+</optgroup>
+<optgroup label="MS Cloud & Power">
+<option value="powerbi">MS Power BI</option>
+<option value="automate">MS Power Automate</option>
+<option value="apps">MS Power Apps</option>
+<option value="onenote">MS OneNote</option>
+<option value="tdo">MS To Do</option>
+<option value="forms">MS Forms</option>
+<option value="loop">MS Loop</option>
+<option value="teams">MS Teams</option>
+<option value="sharepoint">MS SharePoint</option>
+<option value="pages">Web Pages / URL</option>
+</optgroup>
+<optgroup label="Desarrollo & Lógica">
+<option value="cpp">C++ / Dev++</option>
+<option value="pseint">PSeInt</option>
+<option value="html">HTML5 / PHP</option>
+<option value="css">CSS / Sass / Less</option>
+<option value="js">JavaScript / TypeScript</option>
+<option value="python">Python / Jupyter</option>
+<option value="java">Java / JAR</option>
+</optgroup>
+<optgroup label="Multimedia & Otros">
+<option value="pictures">Imágenes / Fotos</option>
+<option value="mp3">Audio / MP3</option>
+<option value="pdf">Documento PDF</option>
+<option value="archive">Comprimidos (ZIP/RAR)</option>
+<option value="txt">Texto Plano / Logs</option>
+</optgroup>
+</select>
+</div>
+<div class="file-drop-area">
+<input type="file" id="mainFileInput" required onchange="updateFileName()">
+<div class="file-dummy">
+<span id="fileLabel">Seleccionar Archivo</span>
+</div>
+</div>
+<div class="modal-actions">
+<button type="button" class="btn-secondary" onclick="closeModal()">CANCELAR</button>
+<button type="submit" class="btn-primary-neon">GUARDAR ARCHIVO</button>
+</div>
+</form>
+</div>
+</div>
+<script src="script.js"></script>
+<footer class="repo-footer" style="z-index: -1 !important;">
+<div class="footer-section">
+<p><span class="brand-name">&reg; 2021-2026 Vylkroxant - Todos los Derechos Reservados </span></p><p style="text-align: center;">Técnico: Angel Manuel Guevara Chavarría</p>
+</div>
+</footer>
+</body>
+</html>
